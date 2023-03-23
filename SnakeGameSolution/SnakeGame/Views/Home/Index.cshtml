@@ -1,0 +1,150 @@
+﻿@{
+	ViewData["Title"] = "Home Page";
+}
+
+@section Styles{
+
+		<style>
+			body {
+		  text-align: center;
+		}
+		.geeks {
+		  font-size: 40px;
+		  font-weight: bold;
+		  color: green;
+		}
+		</style>
+}
+
+<div>
+	 <h1>Snake Game with </h1>
+	 <a id="resetButton" class="btn btn-warning">Reset Game</a>
+	 <p>Score: <span id="score">0</span></p>
+	 <br />
+	<canvas id="board"></canvas>
+</div>
+
+
+@section Scripts{
+
+		<script>
+			var blockSize = 25;
+		var total_row = 17;
+		var total_col = 30;
+		var board;
+		var context;
+		var snakeX = blockSize * 5;
+		var snakeY = blockSize * 5;
+		var speedX = 0;
+		var speedY = 0;
+		var snakeBody = [];
+		var foodX;
+		var foodY;
+		var gameOver = false;
+		var score = 0;
+			document.getElementById("resetButton").addEventListener("click", resetGame);
+
+			function resetGame() {
+				// reset game variables
+				snakeX = blockSize * 5;
+				snakeY = blockSize * 5;
+				speedX = 0;
+				speedY = 0;
+				score = 0;
+					document.getElementById("score").textContent = score;
+				snakeBody = [];
+				placeFood();
+				gameOver = false;
+					interval = setInterval(update, 1000 / 10);
+			}
+
+		var interval;
+
+	window.onload = function () {
+		board = document.getElementById("board");
+		board.height = total_row * blockSize;
+		board.width = total_col * blockSize;
+		context = board.getContext("2d");
+		placeFood();
+		document.addEventListener("keyup", changeDirection);
+		interval = setInterval(update, 1000 / 10);
+	}
+
+		function update() {
+			if (gameOver) {
+			clearInterval(interval);
+			context.fillStyle = "red";
+			context.font = "30px Arial";
+			context.fillText("Game Over", board.width / 2 - 70, board.height / 2);
+			return;
+		}
+			context.fillStyle = "green";
+			context.fillRect(0, 0, board.width, board.height);
+			context.fillStyle = "yellow";
+			context.fillRect(foodX, foodY, blockSize, blockSize);
+			if (snakeX == foodX && snakeY == foodY) {
+				snakeBody.push([foodX, foodY]);
+				placeFood();
+				score++;
+				document.getElementById("score").textContent = score;
+			}
+			for (let i = snakeBody.length - 1; i > 0; i--) {
+				snakeBody[i] = snakeBody[i - 1];
+			}
+			if (snakeBody.length) {
+				snakeBody[0] = [snakeX, snakeY];
+			}
+			context.fillStyle = "white";
+			snakeX += speedX * blockSize;
+			snakeY += speedY * blockSize;
+
+			// check for collision with game boundaries
+			if (snakeX < 0 || snakeX >= board.width || snakeY < 0 || snakeY >= board.height) {
+				gameOver = true;
+				return;
+			}
+
+			// check for collision with snake body
+			for (let i = 0; i < snakeBody.length; i++) {
+				if (snakeX == snakeBody[i][0] && snakeY == snakeBody[i][1]) {
+					gameOver = true;
+					return;
+				}
+			}
+
+			context.fillRect(snakeX, snakeY, blockSize, blockSize);
+			for (let i = 0; i < snakeBody.length; i++) {
+				context.fillRect(snakeBody[i][0], snakeBody[i][1], blockSize, blockSize);
+			}
+		}
+
+			function changeDirection(event) {
+				const LEFT_KEY = 37;
+				const RIGHT_KEY = 39;
+				const UP_KEY = 38;
+				const DOWN_KEY = 40;
+
+				if (event.keyCode == LEFT_KEY && speedX != 1) {
+					speedX = -1;
+					speedY = 0;
+				}
+				if (event.keyCode == UP_KEY && speedY != 1) {
+					speedX = 0;
+					speedY = -1;
+				}
+				if (event.keyCode == RIGHT_KEY && speedX != -1) {
+					speedX = 1;
+					speedY = 0;
+				}
+				if (event.keyCode == DOWN_KEY && speedY != -1) {
+					speedX = 0;
+					speedY = 1;
+				}
+			}
+
+				function placeFood() {
+				foodX = Math.floor(Math.random() * total_col) * blockSize;
+				foodY = Math.floor(Math.random() * total_row) * blockSize;
+			}
+		</script>
+}
