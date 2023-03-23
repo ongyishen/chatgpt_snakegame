@@ -5,6 +5,8 @@ This prompt list will guide you through the process step-by-step and provide you
 
 Whether you’re a beginner or an experienced developer, this tutorial is perfect for anyone looking to create a fun and interactive web page using ChatGPT or Bing Chat.
 
+<img src="https://github.com/ongyishen/chatgpt_snakegame//blob/main/screenshot.gif?raw=true" />
+
 ## Donation
 
 If this project helped you reduce time to develop, please consider buying me a cup of coffee :)
